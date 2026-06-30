@@ -223,11 +223,10 @@ impl BoardDisplay {
         }
 
         // Check if it's part of last move
-        if let Some((from, to)) = self.highlight_last_move {
-            if sq == from || sq == to {
+        if let Some((from, to)) = self.highlight_last_move
+            && (sq == from || sq == to) {
                 return BG_HIGHLIGHT;
             }
-        }
 
         // Normal checkerboard pattern
         if (rank + file) % 2 == 0 {
@@ -353,7 +352,7 @@ impl BoardDisplay {
     fn sq_to_alg(s: Sq) -> String {
         let r = (s >> 4) as i32;
         let f = (s & 15) as i32;
-        if r < 0 || r > 7 || f < 0 || f > 7 {
+        if !(0..=7).contains(&r) || !(0..=7).contains(&f) {
             return String::from("??");
         }
         let file = (b'a' + f as u8) as char;
@@ -470,11 +469,10 @@ impl Menu {
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
 
-        if let Ok(num) = input.trim().parse::<usize>() {
-            if num > 0 && num <= self.options.len() {
+        if let Ok(num) = input.trim().parse::<usize>()
+            && num > 0 && num <= self.options.len() {
                 return Ok(self.options[num - 1].action.clone());
             }
-        }
 
         Ok(String::new())
     }
@@ -509,6 +507,12 @@ pub enum GameMode {
     HumanVsEngine,
     EngineVsEngine,
     Analysis,
+}
+
+impl Default for GameInterface {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl GameInterface {
@@ -582,7 +586,7 @@ impl GameInterface {
         ];
 
         for chunk in commands.chunks(2) {
-            if let Some(&(cmd, desc)) = chunk.get(0) {
+            if let Some(&(cmd, desc)) = chunk.first() {
                 print!("│ {}{:<15}{} {:<20}", BRIGHT_GREEN, cmd, RESET, desc);
                 if let Some(&(c2, d2)) = chunk.get(1) {
                     print!("│ {}{:<15}{} {:<20}", BRIGHT_GREEN, c2, RESET, d2);
@@ -1050,11 +1054,10 @@ impl AsciiArt {
     pub fn show_thinking() {
         use colors::*;
         println!(
-            "{}{}",
-            BRIGHT_YELLOW,
-            r"
+            "{}
     🤔 Thinking...
-        "
+        ",
+            BRIGHT_YELLOW
         );
         println!("{}", RESET);
     }
@@ -1062,13 +1065,12 @@ impl AsciiArt {
     pub fn show_checkmate() {
         use colors::*;
         println!(
-            "{}{}",
-            BRIGHT_RED,
-            r"
+            "{}
     ╔════════════════════════════════╗
     ║        CHECKMATE! ♚♔          ║
     ╚════════════════════════════════╝
-        "
+        ",
+            BRIGHT_RED
         );
         println!("{}", RESET);
     }
@@ -1367,6 +1369,12 @@ pub struct MoveHistoryDisplay {
     current_move: usize,
 }
 
+impl Default for MoveHistoryDisplay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MoveHistoryDisplay {
     pub fn new() -> Self {
         Self {
@@ -1473,11 +1481,10 @@ impl ConfirmDialog {
             let mut input = String::new();
             io::stdin().read_line(&mut input).unwrap();
 
-            if let Ok(choice) = input.trim().parse::<usize>() {
-                if choice > 0 && choice <= options.len() {
+            if let Ok(choice) = input.trim().parse::<usize>()
+                && choice > 0 && choice <= options.len() {
                     return choice - 1;
                 }
-            }
 
             println!("{}Invalid choice!{}", BRIGHT_RED, RESET);
         }

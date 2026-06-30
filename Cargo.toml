@@ -10,6 +10,10 @@ sha2 = "0.10"
 [dev-dependencies]
 criterion = "0.5"
 
+[[bench]]
+name = "engine_bench"
+harness = false
+
 [profile.release]
 opt-level = 3
 lto = true

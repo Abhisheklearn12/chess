@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 730" width="820" height="730" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#343a40"/></marker></defs>
+<rect width="820" height="730" fill="#ffffff"/>
+<rect x="70" y="40" width="150" height="54" rx="8" fill="#ffffff" stroke="#495057" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="145.0" y="67.0">position</tspan></text>
+<rect x="280" y="35" width="200" height="64" rx="8" fill="#ffd8a8" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="380.0" y="67.0">opening book?</tspan></text>
+<rect x="560" y="40" width="170" height="54" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="645.0" y="67.0">book move</tspan></text>
+<rect x="255" y="160" width="300" height="56" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="405.0" y="178.7">iterative deepening</tspan><tspan x="405.0" y="197.4">(depth 1, 2, 3, ...)</tspan></text>
+<rect x="120" y="280" width="230" height="52" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="235.0" y="306.0">aspiration window</tspan></text>
+<rect x="120" y="380" width="600" height="260" rx="8" fill="#f8f9fa" stroke="#868e96" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="420.0" y="510.0"></tspan></text>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" fill="#1e1e1e"><tspan x="420" y="405.0">negamax</tspan></text>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="150" y="440.0">- draw check (rep / 50-move / material)</tspan><tspan x="150" y="461.8">- TT probe  (cutoff or move-ordering hint)</tspan><tspan x="150" y="483.5">- null-move pruning</tspan><tspan x="150" y="505.2">- legal_moves -&gt; order (TT, SEE, killers, history)</tspan><tspan x="150" y="527.0">      -&gt; PVS scout + LMR re-search</tspan><tspan x="150" y="548.8">- leaf -&gt; quiescence (SEE-pruned captures)</tspan><tspan x="150" y="570.5">- TT store (mate-distance corrected)</tspan></text>
+<rect x="220" y="670" width="400" height="50" rx="8" fill="#d3f9d8" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" font-weight="500" fill="#1e1e1e"><tspan x="420.0" y="695.0">best move + PV + score + telemetry</tspan></text>
+<path d="M 220 67 L 278 67" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 480 67 L 558 67" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#2f9e44"><tspan x="500" y="58.0">yes</tspan></text>
+<path d="M 380 99 L 390 158" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="700" fill="#e8590c"><tspan x="396" y="128.0">no</tspan></text>
+<path d="M 390 216 L 300 278" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="500" fill="#495057"><tspan x="150" y="252.0">each depth</tspan></text>
+<path d="M 235 306 L 235 378" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="13" font-weight="500" fill="#495057"><tspan x="245" y="358.0">negamax(α, β)</tspan></text>
+<path d="M 420 640 L 420 668" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 720 470 L 770 470 L 770 188 L 555 188" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="500" fill="#868e96"><tspan x="612" y="460.0">re-search /</tspan><tspan x="612" y="477.4">next depth</tspan></text>
+</svg>

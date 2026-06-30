@@ -9,12 +9,30 @@
 // - Debug utilities and hash key inspection
 // - Thread-safe singleton pattern for global Zobrist instance
 
-use crate::engine::{Board, Piece, Sq};
+use crate::board::Board;
+use crate::types::{Piece, Sq};
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 use std::fs::File;
 use std::io::{self, BufReader, BufWriter, Read, Write};
 use std::sync::{Arc, Mutex, OnceLock};
+
+/// The process-wide, deterministically-seeded key table used for all board
+/// hashing. Seeded once with a fixed value so hashes are stable across runs.
+static SHARED_KEYS: OnceLock<Zobrist> = OnceLock::new();
+
+/// Borrow the shared, immutable Zobrist key table used by [`crate::board`] for
+/// incremental hashing. Cheap to call (one `OnceLock` read after init).
+#[inline]
+pub fn keys() -> &'static Zobrist {
+    SHARED_KEYS.get_or_init(|| Zobrist::with_seed(0x00C0_FFEE_5EED_1234))
+}
+
+impl Default for Zobrist {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 // =====================
 // Core Zobrist Structure
@@ -67,34 +85,33 @@ impl Zobrist {
     pub fn with_seed(seed: u64) -> Self {
         let mut rng = StdRng::seed_from_u64(seed);
 
-        // Generate piece placement keys
+        // Generate piece placement keys (only valid 0x88 squares).
         let mut pieces = [[0u64; 12]; 128];
-        for sq in 0..128 {
-            // Only generate for valid 0x88 squares
+        for (sq, row) in pieces.iter_mut().enumerate() {
             if (sq & 0x88) == 0 {
-                for pc in 0..12 {
-                    pieces[sq][pc] = rng.r#gen();
+                for key in row.iter_mut() {
+                    *key = rng.r#gen();
                 }
             }
         }
 
-        // Generate castling rights keys
+        // Generate castling rights keys.
         let mut castling = [0u64; 16];
-        for i in 0..16 {
-            castling[i] = rng.r#gen();
+        for key in castling.iter_mut() {
+            *key = rng.r#gen();
         }
 
-        // Generate en passant file keys (standard approach)
+        // Generate en passant file keys (standard approach).
         let mut ep_file = [0u64; 8];
-        for f in 0..8 {
-            ep_file[f] = rng.r#gen();
+        for key in ep_file.iter_mut() {
+            *key = rng.r#gen();
         }
 
-        // Generate en passant square keys (for precision)
+        // Generate en passant square keys (for precision).
         let mut ep_square = [0u64; 128];
-        for sq in 0..128 {
+        for (sq, key) in ep_square.iter_mut().enumerate() {
             if (sq & 0x88) == 0 {
-                ep_square[sq] = rng.r#gen();
+                *key = rng.r#gen();
             }
         }
 
@@ -161,6 +178,17 @@ impl Zobrist {
         }
     }
 
+    /// The Zobrist key for `piece` standing on square `sq`. Returns `0`
+    /// (the XOR identity) for an empty piece, so callers can XOR
+    /// unconditionally.
+    #[inline]
+    pub fn piece_key(&self, piece: Piece, sq: Sq) -> u64 {
+        match Self::piece_index(piece) {
+            Some(idx) => self.pieces[sq][idx],
+            None => 0,
+        }
+    }
+
     // =====================
     // Full Board Hashing
     // =====================
@@ -189,7 +217,7 @@ impl Zobrist {
 
         // Hash en passant (using file-based approach for Polyglot compatibility)
         if let Some(ep_sq) = board.ep {
-            let file = (ep_sq & 15) as usize;
+            let file = ep_sq & 15;
             if file < 8 {
                 h ^= self.ep_file[file];
             }
@@ -220,7 +248,7 @@ impl Zobrist {
         h ^= self.castling[board.castling as usize];
 
         if let Some(ep_sq) = board.ep {
-            let file = (ep_sq & 15) as usize;
+            let file = ep_sq & 15;
             if file < 8 {
                 h ^= self.ep_file[file];
             }
@@ -257,11 +285,10 @@ impl Zobrist {
         }
 
         // Remove captured piece from destination (if any)
-        if let Some(cap) = captured {
-            if let Some(idx) = Self::piece_index(cap) {
+        if let Some(cap) = captured
+            && let Some(idx) = Self::piece_index(cap) {
                 h ^= self.pieces[to][idx];
             }
-        }
 
         // Add piece to destination square
         if let Some(idx) = Self::piece_index(piece) {
@@ -288,7 +315,7 @@ impl Zobrist {
 
         // Remove old EP
         if let Some(ep) = old_ep {
-            let file = (ep & 15) as usize;
+            let file = ep & 15;
             if file < 8 {
                 h ^= self.ep_file[file];
             }
@@ -296,7 +323,7 @@ impl Zobrist {
 
         // Add new EP
         if let Some(ep) = new_ep {
-            let file = (ep & 15) as usize;
+            let file = ep & 15;
             if file < 8 {
                 h ^= self.ep_file[file];
             }
@@ -403,7 +430,7 @@ impl Zobrist {
     pub fn hash_breakdown(&self, board: &Board) -> String {
         let mut parts = Vec::new();
 
-        parts.push(format!("=== Zobrist Hash Breakdown ==="));
+        parts.push("=== Zobrist Hash Breakdown ===".to_string());
 
         let mut piece_hash = 0u64;
         for sq in 0..128 {
@@ -433,7 +460,7 @@ impl Zobrist {
         ));
 
         if let Some(ep) = board.ep {
-            let file = (ep & 15) as usize;
+            let file = ep & 15;
             if file < 8 {
                 parts.push(format!(
                     "EP file {}: 0x{:016X}",
@@ -461,7 +488,7 @@ impl Zobrist {
 
         // Check for low bit diversity
         let bits_set = hash.count_ones();
-        if bits_set < 16 || bits_set > 48 {
+        if !(16..=48).contains(&bits_set) {
             return true;
         }
 
@@ -544,10 +571,10 @@ impl Zobrist {
 
         // Read piece keys
         let mut pieces = [[0u64; 12]; 128];
-        for sq in 0..128 {
-            for pc in 0..12 {
+        for row in pieces.iter_mut() {
+            for key in row.iter_mut() {
                 reader.read_exact(&mut buf)?;
-                pieces[sq][pc] = u64::from_le_bytes(buf);
+                *key = u64::from_le_bytes(buf);
             }
         }
 
@@ -556,21 +583,21 @@ impl Zobrist {
         let side = u64::from_le_bytes(buf);
 
         let mut castling = [0u64; 16];
-        for i in 0..16 {
+        for key in castling.iter_mut() {
             reader.read_exact(&mut buf)?;
-            castling[i] = u64::from_le_bytes(buf);
+            *key = u64::from_le_bytes(buf);
         }
 
         let mut ep_file = [0u64; 8];
-        for i in 0..8 {
+        for key in ep_file.iter_mut() {
             reader.read_exact(&mut buf)?;
-            ep_file[i] = u64::from_le_bytes(buf);
+            *key = u64::from_le_bytes(buf);
         }
 
         let mut ep_square = [0u64; 128];
-        for sq in 0..128 {
+        for key in ep_square.iter_mut() {
             reader.read_exact(&mut buf)?;
-            ep_square[sq] = u64::from_le_bytes(buf);
+            *key = u64::from_le_bytes(buf);
         }
 
         Ok(Self {

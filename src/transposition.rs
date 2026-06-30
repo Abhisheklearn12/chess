@@ -2,13 +2,13 @@
 //!
 //! Features:
 //! - Table sized in MB (approximate), rounded to nearest power-of-two bucket count
-//! - Each bucket stores a single entry (simple direct-mapped). Replacement policy:
-//!     prefer deeper entries, break ties by age (older entries replaced first).
+//! - Each bucket stores a single entry (simple direct-mapped). Replacement
+//!   policy: prefer deeper entries, break ties by age (older replaced first).
 //! - Node types: Exact, LowerBound (Beta), UpperBound (Alpha).
 //! - Stores best move (for PV), depth, value, key, and an 8-bit age stamp.
 //! - Probe returns:
-//!     - Option<i32> when entry provides a usable score right away (alpha-beta cutoff / exact)
-//!     - Otherwise returns Option<&TTEntry> for caller to inspect.
+//!   - Option<i32> when entry provides a usable score right away (cutoff/exact)
+//!   - Otherwise returns Option<&TTEntry> for caller to inspect.
 //! - Stats: probes, hits, stores.
 //! - Save / load to compact binary file.
 //!
@@ -154,12 +154,11 @@ impl TranspositionTable {
         // u64 key(8) + i32 value(4) + i32 depth(4) + u8 age(1) + u8 node(1) + PackedMove(4) + padding => ~24 bytes
         let bytes_per_entry = 24usize.max(std::mem::size_of::<TTEntry>());
         let total_bytes = size_mb * 1024 * 1024;
-        let mut buckets = total_bytes / bytes_per_entry;
-        if buckets == 0 {
-            buckets = 1;
-        }
-        // round down to power-of-two
-        let pow = (usize::BITS - (buckets as u32).leading_zeros() - 1) as usize;
+        let buckets = (total_bytes / bytes_per_entry).max(1);
+        // Round down to the largest power of two that fits. NOTE: we must take
+        // `leading_zeros` of the same width we shift in (usize), otherwise a
+        // 32-bit count mixed with `usize::BITS` overshoots wildly.
+        let pow = (usize::BITS - 1 - buckets.leading_zeros()) as usize;
         let count = 1usize << pow;
         TranspositionTable::new_buckets(count)
     }
@@ -222,28 +221,28 @@ impl TranspositionTable {
         if entry.depth >= depth {
             match entry.node {
                 NodeType::Exact => {
-                    return ProbeResult::Usable(entry.value, Some(entry.best));
+                    ProbeResult::Usable(entry.value, Some(entry.best))
                 }
                 NodeType::LowerBound => {
                     // stored value is a lower bound: usable if value >= beta
                     if entry.value >= beta {
-                        return ProbeResult::Usable(entry.value, Some(entry.best));
+                        ProbeResult::Usable(entry.value, Some(entry.best))
                     } else {
-                        return ProbeResult::Found(entry);
+                        ProbeResult::Found(entry)
                     }
                 }
                 NodeType::UpperBound => {
                     // stored value is an upper bound: usable if value <= alpha
                     if entry.value <= alpha {
-                        return ProbeResult::Usable(entry.value, Some(entry.best));
+                        ProbeResult::Usable(entry.value, Some(entry.best))
                     } else {
-                        return ProbeResult::Found(entry);
+                        ProbeResult::Found(entry)
                     }
                 }
             }
         } else {
             // depth insufficient: return entry for ordering info (e.g., PV move)
-            return ProbeResult::Found(entry);
+            ProbeResult::Found(entry)
         }
     }
 
@@ -280,9 +279,7 @@ impl TranspositionTable {
         };
 
         // Decide replacement
-        let replace = if old.is_empty() {
-            true
-        } else if new_entry.depth > old.depth {
+        let replace = if old.is_empty() || new_entry.depth > old.depth {
             true
         } else if new_entry.depth == old.depth {
             // prefer newer age

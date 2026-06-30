@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 760" width="900" height="760" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#343a40"/></marker></defs>
+<rect width="900" height="760" fill="#ffffff"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#1971c2"><tspan x="24" y="130.0">Applications</tspan></text>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#2f9e44"><tspan x="24" y="372.0">Engine core</tspan></text>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#e8590c"><tspan x="24" y="632.0">Foundations</tspan></text>
+<rect x="200" y="50" width="680" height="160" rx="8" fill="#f8f9fa" stroke="#868e96" stroke-width="2"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" fill="#1971c2"><tspan x="220" y="75.0">main.rs   (CLI dispatch)</tspan></text>
+<rect x="230" y="95" width="250" height="95" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="355.0" y="132.6">ui/  (TUI)</tspan><tspan x="355.0" y="152.6">auth.rs</tspan></text>
+<rect x="560" y="95" width="290" height="95" rx="8" fill="#a5d8ff" stroke="#1971c2" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="705.0" y="142.5">uci.rs (protocol)</tspan></text>
+<rect x="440" y="198" width="200" height="46" rx="8" fill="#ffffff" stroke="#495057" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="540.0" y="221.0">game.rs (game API)</tspan></text>
+<rect x="200" y="250" width="680" height="500" rx="8" fill="#f8f9fa" stroke="#868e96" stroke-width="2"/>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="700" fill="#2f9e44"><tspan x="220" y="277.0">engine.rs (facade)</tspan></text>
+<rect x="230" y="300" width="150" height="85" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="305.0" y="332.6">search</tspan><tspan x="305.0" y="352.6">+ see</tspan></text>
+<rect x="420" y="308" width="120" height="60" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="480.0" y="338.0">eval</tspan></text>
+<rect x="580" y="300" width="270" height="85" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="715.0" y="332.6">san/pgn/book</tspan><tspan x="715.0" y="352.6">timeman</tspan></text>
+<rect x="300" y="415" width="160" height="60" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="380.0" y="445.0">movegen</tspan></text>
+<rect x="500" y="415" width="130" height="60" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="565.0" y="445.0">perft</tspan></text>
+<rect x="230" y="500" width="140" height="60" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="300.0" y="530.0">attacks</tspan></text>
+<rect x="420" y="500" width="290" height="60" rx="8" fill="#b2f2bb" stroke="#2f9e44" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="565.0" y="530.0">transposition (TT)</tspan></text>
+<rect x="230" y="585" width="140" height="60" rx="8" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="300.0" y="615.0">board</tspan></text>
+<rect x="420" y="585" width="140" height="60" rx="8" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="490.0" y="615.0">zobrist</tspan></text>
+<rect x="610" y="585" width="200" height="60" rx="8" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="710.0" y="615.0">log (telem.)</tspan></text>
+<rect x="230" y="665" width="140" height="60" rx="8" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="300.0" y="695.0">moves</tspan></text>
+<rect x="420" y="665" width="140" height="60" rx="8" fill="#ffec99" stroke="#e8590c" stroke-width="2"/>
+<text text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" font-weight="500" fill="#1e1e1e"><tspan x="490.0" y="695.0">types</tspan></text>
+<text font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14" font-weight="500" fill="#e8590c"><tspan x="575" y="678.0">(0x88 squares,</tspan><tspan x="575" y="695.5"> pieces, colors)</tspan></text>
+<path d="M 355 190 L 470 200" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 705 190 L 600 200" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 540 244 L 540 298" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 380 340 L 418 338" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 300 385 L 360 413" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 460 445 L 498 445" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 345 475 L 305 498" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 300 560 L 300 583" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 370 615 L 418 615" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+<path d="M 300 645 L 300 663" fill="none" stroke="#343a40" stroke-width="2" marker-end="url(#ah)"/>
+</svg>

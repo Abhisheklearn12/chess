@@ -34,10 +34,18 @@ pub struct AuthSystem {
     current_user: Option<User>,
 }
 
+impl Default for AuthSystem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AuthSystem {
     pub fn new() -> Self {
+        // Best-effort creation of the users file; never panic if the working
+        // directory is read-only; registration will surface any real error.
         if !Path::new(USERS_FILE).exists() {
-            File::create(USERS_FILE).expect("Failed to create users file");
+            let _ = File::create(USERS_FILE);
         }
         Self { current_user: None }
     }
@@ -117,13 +125,12 @@ impl AuthSystem {
         io::stdin().read_line(&mut password)?;
         let password = password.trim().to_string();
 
-        if let Some(user) = self.load_user(&username)? {
-            if user.verify_password(&password) {
+        if let Some(user) = self.load_user(&username)?
+            && user.verify_password(&password) {
                 self.current_user = Some(user);
                 println!("✅ Login successful! Welcome, {}!", username);
                 return Ok(true);
             }
-        }
 
         println!("❌ Invalid username or password!");
         Ok(false)
@@ -143,22 +150,29 @@ impl AuthSystem {
     }
 
     fn user_exists(&self, username: &str) -> io::Result<bool> {
-        let file = File::open(USERS_FILE)?;
+        let file = match File::open(USERS_FILE) {
+            Ok(f) => f,
+            Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(false),
+            Err(e) => return Err(e),
+        };
         let reader = BufReader::new(file);
 
         for line in reader.lines() {
             let line = line?;
-            if let Some(stored_username) = line.split(':').next() {
-                if stored_username == username {
+            if let Some(stored_username) = line.split(':').next()
+                && stored_username == username {
                     return Ok(true);
                 }
-            }
         }
         Ok(false)
     }
 
     fn load_user(&self, username: &str) -> io::Result<Option<User>> {
-        let file = File::open(USERS_FILE)?;
+        let file = match File::open(USERS_FILE) {
+            Ok(f) => f,
+            Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(None),
+            Err(e) => return Err(e),
+        };
         let reader = BufReader::new(file);
 
         for line in reader.lines() {
@@ -205,5 +219,28 @@ pub fn show_welcome_menu() -> io::Result<i32> {
             println!("❌ Invalid choice! Please enter 1, 2, or 3.");
             Ok(0)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn hashing_is_deterministic_and_distinct() {
+        let h1 = User::hash_password("secret123");
+        let h2 = User::hash_password("secret123");
+        let h3 = User::hash_password("different");
+        assert_eq!(h1, h2, "same password must hash the same");
+        assert_ne!(h1, h3, "different passwords must hash differently");
+        assert_eq!(h1.len(), 64, "sha256 hex digest is 64 chars");
+    }
+
+    #[test]
+    fn verify_password_matches_only_correct() {
+        let u = User::new("alice".to_string(), "hunter2x".to_string());
+        assert!(u.verify_password("hunter2x"));
+        assert!(!u.verify_password("wrong"));
+        assert_eq!(u.username, "alice");
     }
 }
